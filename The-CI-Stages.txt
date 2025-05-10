@@ -1,4 +1,4 @@
-THE CI STAGES For any Branch (Feature-Branch or Trunk/Develop/Main) or PR
+THE Continuous Integration (CI) STAGES For any Branch (Feature-Branch or Trunk/Develop/Main) or PR
 ==================================================================================
 
 - Stage: (Declarative: Checkout SCM)
@@ -44,7 +44,16 @@ THE CI STAGES For any Branch (Feature-Branch or Trunk/Develop/Main) or PR
 	- Publish the container image to JFrog
 
 - Stage: (Trigger Deployment)
+	- Can be optional for feature-branch, but mandatory for trunk
 	- Invoke the CD pipeline (which is a separate pipeline), with the parameters -  Deployable_asset (The built docker image tag or the built/tagged JAVA Jar) 
+	- [Option-2] 
+		- For every "source" repo, we create a corresponding "deployment" repo. Source-Repo: micro-service-x, Deployment-Repo: micro-service-x-deployment
+		- In the CI's Trigger Deployment stage, Jenkins will do the following:
+			- checkout micro-service-x-deployment repo
+			- create a branch with the same name as the the branch on which the CI is being run
+			- create a file called - deployable-artifacts, which contains the details of the built artectacts
+			- commit and push the branch to remote
+		- when the new branch is created in Deployment-Repo, a Git webhook invokes the Deployment pipeline
 
 
 - Stage: (Declarative: Post Actions)
