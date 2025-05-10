@@ -1,0 +1,82 @@
+Releasing/Deploying to Production 
+====================================
+
+Once CI and CD are completed for the Trunk or Release branch, we are ready to release the code to Production
+
+A Separate, specific, Jenkins pipeline must be created for this. The pipeline should accept the GIT COMMIT HASH of the code to release.
+
+The pipeline will contain the following stages, with "Approval Gates" for each stage:
+
+See https://github.com/vjkancherla/the_ideal_pipeline/blob/main/jenkinsfiles/post-merge/Jenkinsfile for the full pipeline
+
+=====
+stage("Deploy-To-UAT") {
+      when {
+        // skip this stage unless on main branch
+        branch "main"
+      }
+      steps {
+        approve_deploy("uat")
+        deploy("uat")
+      }
+    }
+
+    stage("Verify-Deployment-To-UAT") {
+      when {
+        // skip this stage unless on main branch
+        branch "main"
+      }
+      steps {
+        verify_deployment("uat")
+      }
+    }
+
+    stage("Deploy-To-Canary") {
+      when {
+        // skip this stage unless on main branch
+        branch "main"
+        expression {
+          check_prod_deploy_exists()
+        }
+      }
+      steps {
+        approve_deploy("canary")
+        deploy("canary")
+      }
+    }
+
+    stage("Verify-Deployment-To-Canary") {
+      when {
+        // skip this stage unless on main branch
+        branch "main"
+        expression {
+          check_prod_deploy_exists()
+        }
+      }
+      steps {
+        verify_deployment("prod")
+      }
+    }
+
+    stage("Deploy-To-Prod") {
+      when {
+        // skip this stage unless on main branch
+        branch "main"
+      }
+      steps {
+        approve_deploy("prod")
+        deploy("prod")
+      }
+    }
+
+    stage("Verify-Deployment-To-Prod") {
+      when {
+        // skip this stage unless on main branch
+        branch "main"
+      }
+      steps {
+        verify_deployment("prod")
+      }
+    }
+
+====
