@@ -21,6 +21,7 @@ YouTube Video about CONTINUOUS DELIVERY
 		- Performance, Load, Stress and Spike testing
 		- Run as much of the testing in parallel as possible
 		- You should decide the order not your tools
+	
 	- DEPLOYING INCOMPLETE WORK (HOW TO DELIVER FASTER AND THEN FINISH A FEATURE)
 		- https://youtu.be/po712VIZZ7M?t=1251
 		- Incomplete Features:

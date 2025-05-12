@@ -158,8 +158,8 @@ Suggested Practices for Continuous Integration
 
 THE TASKS OF A CONTINUOUS INTEGRATION AND DELIVERY PIPELINE
 ======================
-[version-1] See Page-15 (Table of contents) in /Users/vkancherla/Downloads/Devops-Books/Rawat S. CI-CD Pipeline with Docker and Jenkins. Learn How to Build...2023.pdf
-[version-2] See Page-89 in /Users/vkancherla/Downloads/Devops-Books/Van Merode H. Continuous Integration (CI) and Continuous Delivery (CD)...2023.pdf
+[version-1] See Page-15 (Table of contents) in Devops-Books/Rawat S. CI-CD Pipeline with Docker and Jenkins. Learn How to Build...2023.pdf
+[version-2] See Page-89 in Devops-Books/Van Merode H. Continuous Integration (CI) and Continuous Delivery (CD)...2023.pdf
 	- Validate entry criteria
 		- eg: check that the build is triggered by main branch
 	- Execute build 
