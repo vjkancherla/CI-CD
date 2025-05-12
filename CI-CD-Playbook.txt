@@ -1,0 +1,281 @@
+========================================================
+CONTINUOUS INTEGRATION AND CONTINUOUS DELIVERY PLAYBOOK
+========================================================
+
+First principle of the Agile Manifesto: “Our highest priority is to satisfy the customer through early and continuous delivery of valuable software”
+
+"Reduce the cycle time between an idea and usable software"
+
+TransFicc (FinTech) Continuous Delivery: https://transficc.com/technology
+
+What is Continuous Delivery as Per Transficc?
+
+    Satisfy the customer through early and Continuous Delivery of valuable software
+    First principle of the Agile Manifesto - Done means released
+    Create a repeatable, reliable process for releasing software
+
+HIGH QUALITY TESTING IS KEY FOR CD
+UNIT TESTS, SMOKE TESTS, ACCEPTANCE TESTS (ATDD)
+
+SEE THE EXCELLENT USECASE in Van Merode's Book - PAGE 359
+
+GREAT RESOURCES: https://martinfowler.com/tags/continuous%20delivery.html
+
+
+CONTINUOUS DELIVERY
+==============
+https://continuousdelivery.com/
+
+Continuous Delivery is a software development discipline where you build software in such a way that the software can be released to production at any time. 
+
+Continuous Delivery is the ability to get changes of all types—including new features, configuration changes, bug fixes and experiments—into production, 
+or into the hands of users, safely and quickly in a sustainable way.
+
+Our goal is to make deployments—whether of a large-scale distributed system, a complex production environment, an embedded system, or an app—predictable, 
+routine affairs that can be performed on demand.
+
+WE ACHIEVE ALL THIS BY ENSURING OUR CODE IS ALWAYS IN A DEPLOYABLE STATE, even in the face of teams of thousands of developers making changes on a daily basis. 
+We thus completely eliminate the integration, testing and hardening phases that traditionally followed “dev complete”, as well as code freezes.
+
+CD + Deployment Pipeline SHOULD give us a definite statement about the releasability of our software.
+
+
+High performance teams consistently deliver services faster and more reliably than their low performing competition.
+This is true even in highly regulated domains such as:
+a. financial services (https://www.youtube.com/watch?v=eMS97X5ZTGc)
+b. government (https://www.youtube.com/watch?v=QwHVlJtqhaI). 
+
+The practices at the heart of continuous delivery help us achieve several important benefits:
+	- Low risk releases: 
+		make software deployments painless, low-risk events that can be performed at any time, on demand.
+	    By applying patterns such as blue-green deployments it is relatively straightforward to achieve 
+	    zero-downtime deployments that are undetectable to users.
+	
+	- Faster time to market: 
+		When teams work together to automate the build and deployment, environment provisioning, and 
+		regression testing processes, developers can incorporate integration and regression testing into 
+		their daily work and completely remove these phases.
+		
+	- Higher quality: 
+		When developers have automated tools that discover regressions within minutes, teams are freed to focus 
+	    their effort on user research and higher level testing activities such as exploratory testing, usability testing, 
+	    and performance and security testing. By building a deployment pipeline, these activities can be performed continuously 
+	    throughout the delivery process, ensuring quality is built in to products and services from the beginning.
+	
+	- Lower costs: 
+		Any successful software product or service will evolve significantly over the course of its lifetime. By investing in 
+		build, test, deployment and environment automation, we substantially reduce the cost of making and delivering incremental 
+		changes to software by eliminating many of the fixed costs associated with the release process.
+	
+	- Better products: 
+		Continuous delivery makes it economic to work in small batches. This means we can get feedback from users throughout 
+	    the delivery lifecycle based on working software. Techniques such as A/B testing enable us to take a hypothesis-driven 
+	    approach to product development whereby we can test ideas with users before building out whole features. This means we 
+	    can avoid the 2/3 of features we build that deliver zero or negative value to our businesses.
+	
+	- Happier teams:
+		Peer-reviewed research has shown continuous delivery makes releases less painful and reduces team burnout. Furthermore, 
+	    when we release more frequently, software delivery teams can engage more actively with users, learn which ideas work and 
+	    which don’t, and see first-hand the outcomes of the work they have done. By removing the low-value painful activities associated 
+	    with software delivery, we can focus on what we care about most—continuously delighting our users.
+
+Continuous delivery is not magic. It’s about continuous, daily improvement and the constant discipline of pursuing higher performance by 
+following the heuristic “if it hurts, do it more often, and bring the pain forward.”
+
+
+CONTINUOUS INTEGRATION
+========
+- Continuous integration requires that every time somebody commits any change, the entire application is built 
+and a comprehensive set of automated tests is run against it. Crucially, if the build or test process fails, 
+the development team stops whatever they are doing and fixes the problem immediately. The goal of continuous 
+integration is that the software is in a working state all the time.
+
+- WITHOUT continuous integration, your software is broken until somebody proves it works, usually during a 
+testing or integration stage. 
+  WITH continuous integration, your software is proven to work (assuming a sufficiently
+comprehensive set of automated tests) with every new change and you know the moment it breaks and can fix it immediately. 
+
+- Bugs are caught much earlier in the delivery process when they are cheaper to fix, providing significant cost and time savings.
+
+- A good CI configuration concentrates on giving timely and accurate feedback to the developer.
+
+
+Prerequisites for Continuous Integration
+	- Check In Regularly to Trunk 
+		- Checking in regularly brings lots of other benefits. It makes your changes smaller and thus less likely 
+		  to break the build. It means you have a recent known good version of the software to revert to when you make a mistake or go down the wrong path.
+		- It allows developers to be more explorative, trying out ideas and discarding them by reverting back to the last committed version.
+	
+	- Create a Comprehensive Automated Test Suite:
+		- If you don’t have a comprehensive suite of automated tests, a passing build only means that the application could be compiled and assembled.
+		- There are three kinds of tests we are interested in running from our continuous integration build: unit tests, component tests, and acceptance tests.
+			- Unit tests are written to test the behavior of small pieces of your application in isolation.
+			- Component tests test the behavior of several components of your application.
+			- Acceptance tests test that the application meets the acceptance criteria decided by the business, including both 
+			  the functionality provided by the application and its characteristics such as capacity, availability, security, and so on. 
+	
+	- Keep the Build and Test Process Short
+		- If it takes too long to build the code and run the unit tests, you will run into the following problems:
+			- People will stop doing a full build and running the tests before they check in. You will start to get more failing builds.
+			- The continuous integration process will take so long that multiple commits will have taken place by the time you can run the build again, 
+			  so you won’t know which check-in broke the build.
+			- People will check in less often because they have to sit around for ages waiting for the software to build and the tests to run.
+	
+	- Managing Your Developer's Development Workspace
+		- Developers should be able to run the build, execute the automated tests, and deploy the application in an environment under their control.
+		- Running the application in a local development environment should use the same automated processes that are used 
+		  in the continuous integration and testing environments and ultimately in production.
+		  
+		  
+Essential Practices for Continuous Integration
+	- https://www.youtube.com/watch?v=Xl62gQpAl1w
+	- Don’t Check In on a Broken Build
+	- As developers come to a pause and are ready to commit, they should refresh their local copy of the project by updating from the version control system.
+	- Always run commit tests (unit tests) locally before commiting
+		- Other people may have checked in before your last update from version control, and the combination of your new changes and theirs might cause tests to fail. 
+		  If you check out/rebase and run the commit tests locally, you will identify this problem without breaking the build.
+	- Wait for Commit Tests to Pass before Moving On
+	- At the point of check-in, the developers who made it are responsible for monitoring the build’s progress.
+	- Fix or revert build failures within 10 minutes (time-boxing)
+	- Never Go Home on a Broken Build
+		- we recommend that you check in regularly and early enough to give yourself time to deal with problems should they occur.
+		- Alternatively, save your check-in for the next day; many experienced developers make a point of not checking in less than an 
+		  hour before the end of work, and instead leave that to do first thing the next morning.
+		- If all else fails, simply revert your change from source control and leave it in your local working copy
+	- If a team mate breaks the rules, revert their changes
+	- Don’t Comment Out Failing Tests
+	- Take Responsibility for All Breakages That Result from Your Changes
+	- If it is unclear who commited a failure, it is the responsibility of everyone who may be responsible to agree who will fix the failure
+
+
+Suggested Practices for Continuous Integration
+	- Failing the Build for Slow Tests
+	- Failing a Build for Architectural Breaches
+	- Failing the Build for Warnings and Code Style Breaches
+	
+
+
+
+THE TASKS OF A CONTINUOUS INTEGRATION AND DELIVERY PIPELINE
+======================
+[version-1] See Page-15 (Table of contents) in /Users/vkancherla/Downloads/Devops-Books/Rawat S. CI-CD Pipeline with Docker and Jenkins. Learn How to Build...2023.pdf
+[version-2] See Page-89 in /Users/vkancherla/Downloads/Devops-Books/Van Merode H. Continuous Integration (CI) and Continuous Delivery (CD)...2023.pdf
+	- Validate entry criteria
+		- eg: check that the build is triggered by main branch
+	- Execute build 
+	- Perform unit tests
+	- Static code analysis 
+		- check App code and IaC 
+	- Package artifact
+	- Scan artifact for vulnerabilities
+	- Publish artifact
+	- Provision test env
+	- Deploy artifact to test
+	- Perform Integration and Smoke tests
+	- Validate infrastructure compliance
+		- involves a dynamic scan of the target environment, the application running in this environment,
+		  resources used by the application, and application-specific settings
+	- Validate exit criteria
+		- see pg: 98/99 in Van Merode's Book
+
+
+Adding Continuous Delivery TO PRODUCTION steps 
+	The "Validate exit criteria" step is the last step of Continuous Integration.
+	We now have the option of:
+		a. either adding the steps to the above pipeline to promote a release and deploy it to production
+		b. or, create a separate pipeline, that will be manually triggered, to release and deploy to production.
+Steps:	
+	- Perform dual control (ie. add a approval gate)
+		- An artifact may be deployed only if it was approved by a release manager, a product owner, 
+		  or a designated person (a delegate). This approval is called dual control because there is 
+		  always a second person involved in putting an artifact into production. This approval is a manual task.
+	- Provision Production Env
+	- Deploy Artifact to Production
+	- Notify Actors
+
+
+
+USING SHORT LIVED FEATURE BRANCHES and CONTINUOUS INTEGRATION/CONTINUOUS DELIVERY
+================
+1. Merge into Trunk at least twice a day
+2. Prior to merge, pull changes from main
+3. Pre-Commit/Merge Practices, on Dev's local machine:
+	- Local Builds
+	- Local Testing: Developers run unit tests
+	- Linting 
+	- security testing 
+		- use talissman (https://github.com/thoughtworks/talisman):  Using a pre-commit hook, Talisman validates the outgoing changeset for things that look suspicious — such as tokens, passwords, and private keys. 
+		- SAST (with sonar) + DAST
+3.1. Ideally, this above should be enough to merge the feature branch into Main and let Continuous Integration take over
+4. Or, We can crete a pre-merge pipeline (on pull request to Main) to
+	- run a pared down version of CI on the branch/PR itself
+		- see page 112 and Page 367 in Van Merode's book
+	
+
+Continuous Delivery 
+
+1. Trunk Based Development or very short-lived branches are used
+2. Developers make small, incremental changes and uses feature flags
+3. Once the dev is ready to commit, he first pulls changes from trunk and merges them into his branch
+4. Run unit and integration (?) tests locally
+5. Get the code peer reviewed 
+6. Commit the code into trunk
+7. CI happens 
+8. If the build fails, the developer fixes it, or the commit is rolled back
+9. If other devs are committing code into Trunk, whilst the build has failed, their builds fail too. That’s ok. When the build fails maybe we should reject further commits until it is fixed.
+10. CD happens and code deployed to DEV or Test env
+11. Acceptance and other tests are run.
+12. Once all tests pass, code is deemed ready to be deployed and released to prod
+
+
+
+RELEASE (Not Deployment)
+1. After making multiple, small, incremental commits to Trunk, the developer, at some point, believes his task has done and is ready to go live.
+2. It’s important to define a developer’s task as “done” only when it is successfully running/released in prod.
+3. “You built it, you run it “ - make the developer responsible for releasing his code to live. Read about how Etsy does it. 
+4. When you make developers responsible for releasing their own changes they tend to release small changes.
+
+“If it’s painful, do it more often“ 
+“If it’s painful, try to bring the pain forward”
+
+Release Cadence: Define a regular release cadence, where new changes are bundled and released together at scheduled intervals. This approach can provide a predictable release schedule and helps coordinate the efforts of different teams.
+
+Release Strategies
+See Page 158 onwards in Van Merode H. Continuous Integration (CI) and Continuous Delivery (CD)...2023.pdf
+[1] Road Map based release
+[2] Timeboxed Release
+[3] Regular Release
+[4] Continuous Deployment
+[5] Feature-Toggle based release
+
+Timeboxed Release Strategy Implementation Options
+Image that we want to release to Prod once a week, on Tuesday
+[1] Every Wednesday, we release the latest artefacts (built as a result of continuous) to Canary servers/Namespaces
+[2] Let the release cook on Canary servers for a week or 6 days
+[3] On Tuesday, promote the release from Canary to Prod Servers
+
+Automated Pipeline for Release
+As part of CI/CD, artefacts/container images are constantly being built (for each commit) and stored in a repo.
+When it comes to deploying and releasing to Prod environment, we will have an automated Pipeline which :
+[1] Will be manually triggered
+[2] Accepts a bunch on parameters. One of the parameters will be version of the artefact/container image to release
+[2] Pulls the specified artefact and deploys it to the Prod env
+NOTE that this pipeline will be separate from the pipeline which performs CI/CD for commits
+
+
+ETSY Continuous Deployment where Devs are responsible for deploying 
+1. Devs make small, incremental changes
+2. Most changes are behind feature flags
+3. Devs run pre commit tests on their local machines
+4. Possibly, they can use short lived branches and run ci on that branch
+5. When they are ready to commit they use the deploynator tool
+6. Once it’s their turn to deploy they first merge their change into trunk
+7. Then, they push a button on deploynator to deploy the code to Princess/Staging 
+8. They themselves are responsible for testing in staging 
+9. Very good observability in place for monitoring the deployment 
+10. They then push another button on deploynator to deploy to production 
+11. If issues are found, they fix the issue and roll forward . If no quick fix, then revert commit in main 
+12. Repeat the above 25 times a day!
+13. Inability to deploy is a P1 incident 
+Enables continuous experimentation with quick feedback 
+Do they use progressive delivery? Blue/Green or Canary?
