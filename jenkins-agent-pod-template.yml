@@ -1,0 +1,174 @@
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "https://example.com/jenkins/job/104367/project-x/job/feature%252FJIRA-12234-feature-xx/4/"
+    runUrl: "job/104367/project-x/job/feature%252FJIRA-12234-feature-xx/4/"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "d6313a4d0a80855fef06013e0fea7ec71aa62f4a"
+    jenkins/label: "rvice_feature_2FJIRA-12234-feature-xx_4-c8msk"
+  name: "rvice-feature-2fJIRA-12234-feature-xx-4-r9bzv"
+  namespace: "jenkins-agents"
+spec:
+  containers:
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "example.com/ex-internal-stable-mirror/example.com/bc/docker-cli:20.10.16"
+    imagePullPolicy: "IfNotPresent"
+    name: "docker-cli"
+    resources: {}
+    tty: false
+    volumeMounts:
+    - mountPath: "/var/lib/docker"
+      name: "volume-0"
+      readOnly: false
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - env:
+    - name: "DOCKER_TLS_CERTDIR"
+    image: "example.com/ex-internal-stable-mirror/example.com/bc/dind:24.0.5-dind"
+    imagePullPolicy: "IfNotPresent"
+    name: "dind"
+    resources: {}
+    securityContext:
+      privileged: true
+    tty: false
+    volumeMounts:
+    - mountPath: "/var/lib/docker"
+      name: "volume-0"
+      readOnly: false
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "example.com/internal-mirror/example.com/bc/1282/12222/bc/sonarscanner:4.8.1-prod"
+    imagePullPolicy: "IfNotPresent"
+    name: "sonar-scanner"
+    resources: {}
+    tty: true
+    volumeMounts:
+    - mountPath: "/var/lib/docker"
+      name: "volume-0"
+      readOnly: false
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "example.com/ex-internal-stable-mirror/example.com/bc/maven:ubuntu-jdk17-maven-3.6.3-prod"
+    imagePullPolicy: "IfNotPresent"
+    name: "maven"
+    resources: {}
+    tty: true
+    volumeMounts:
+    - mountPath: "/var/lib/docker"
+      name: "volume-0"
+      readOnly: false
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - env:
+    - name: "JENKINS_SECRET"
+      value: "********"
+    - name: "JENKINS_AGENT_NAME"
+      value: "rvice-feature-2fJIRA-12234-feature-xx-4-r9bzv"
+    - name: "JENKINS_WEB_SOCKET"
+      value: "true"
+    - name: "JENKINS_NAME"
+      value: "rvice-feature-2fJIRA-12234-feature-xx-4-r9bzv"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "https://example.com/jenkins/"
+    image: "example.com/internal-mirror/example.com/bc/1282/12222/bc/jenkins-inbound-agent:4.13.2-jdk11-ubuntu-prod"
+    imagePullPolicy: "IfNotPresent"
+    name: "jnlp"
+    resources: {}
+    tty: false
+    volumeMounts:
+    - mountPath: "/var/lib/docker"
+      name: "volume-0"
+      readOnly: false
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "example.com/ex-internal-stable-mirror/example.com/bc/labs-utils:1.0.1"
+    imagePullPolicy: "IfNotPresent"
+    name: "tools"
+    resources: {}
+    tty: true
+    volumeMounts:
+    - mountPath: "/var/lib/docker"
+      name: "volume-0"
+      readOnly: false
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "example.com/internal-mirror/example.com/bc/1282/12222/bc/checkmarx:2.0.1-prod"
+    imagePullPolicy: "IfNotPresent"
+    name: "checkmarx"
+    resources: {}
+    tty: true
+    volumeMounts:
+    - mountPath: "/var/lib/docker"
+      name: "volume-0"
+      readOnly: false
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "example.com/internal-mirror/example.com/bc/1282/12222/bc/jfrogcli:2.56.1-prod"
+    imagePullPolicy: "IfNotPresent"
+    name: "jfrogcli"
+    resources: {}
+    tty: true
+    volumeMounts:
+    - mountPath: "/var/lib/docker"
+      name: "volume-0"
+      readOnly: false
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  imagePullSecrets:
+  - name: "spregcred"
+  nodeSelector:
+    kubernetes.io/os: "linux"
+  restartPolicy: "Never"
+  securityContext:
+    runAsGroup: 0
+    runAsUser: 0
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "volume-0"
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
