@@ -1,0 +1,189 @@
+YouTube Video about CONTINUOUS DELIVERY 
+===========================================
+
+[1] It’s Not Continuous Delivery If You Can’t Deploy Right Now • Ken Mugrage • GOTO 2017
+	- https://www.youtube.com/watch?v=po712VIZZ7M
+	- Every commit is a release candidate.
+	- The purpose of CD is kill a release candidate. You may not prove something is good, but you can prove that it is bad.
+	- Partially done might be useful. We can get valuable feedback that will help us decide what to do next.
+	- You cannot do continuous delivery if you're not doing really good continuous integration
+	- If you're doing long-lived feature branching you are not doing continuous integration. You might be doing really good automated 
+	  build and test and that might work great for you and okay that's fine but continuous integration means building off trunk trunk base development master.
+	- Commit more often. Twice a day atleast
+	- Small incremental changes
+	- If its painful, do it more often
+	- TrunkBaseDevelopment.com
+	- Good Practises:
+		- Pre-Commit testing
+			- add security testing 
+				- use tailsman (https://github.com/thoughtworks/talisman):  Using a pre-commit hook, Talisman validates the outgoing changeset for things that look suspicious — such as tokens, passwords, and private keys. 
+				- SAST + DAST
+		- Performance, Load, Stress and Spike testing
+		- Run as much of the testing in parallel as possible
+		- You should decide the order not your tools
+	
+	- DEPLOYING INCOMPLETE WORK (HOW TO DELIVER FASTER AND THEN FINISH A FEATURE)
+		- https://youtu.be/po712VIZZ7M?t=1251
+		- Incomplete Features:
+			- FEATURE TOGGLES
+				- https://martinfowler.com/articles/feature-toggles.html
+				- Ability to Deploy a release with features turned off. 
+				- Release can be done weeks ago, and We can turn the features on when we want. All big companies do this (Apple, Facebook, etc)
+				- Netflix uses dynamic toggles to turn off features (recommendations engine, etc) when performance degrades
+				- Features can be made available to only a sub-set of users
+				- IMPORTANT: Write Tests to test feature toggles on and off
+				- IMPORTANT: Feature toggles are technical debt and they need to be removed once they are no longer required
+		- Architectural changes, for example - changes to core-libraries, or major version upgrades to dependencies
+			- https://youtu.be/po712VIZZ7M?t=1537
+			- Branch by abstraction (also see TrunkBaseDevelopment.com)
+			- https://martinfowler.com/bliki/BranchByAbstraction.html
+			- https://continuousdelivery.com/2011/05/make-large-scale-changes-incrementally-with-branch-by-abstraction/
+	- MANAGING RISK
+		-  Optimize for recovery
+			- roll forward. I.e do a new release
+			- even in the face of critical bugs, it is recommended to adhere to the standard deployment process. 
+			  The reason for this is that skipping any part of the process, especially testing stages, might introduce new issues, leading to more damage than the initial bug.
+			- since changes deployed are supposed to be small, fixing it should be easy.
+			- Or, revert the change
+	- Deployment Strategies
+		- Canary (with or without feature toggle)
+		- Dark launch 
+			- Brilliant! Must listen! How facebook and GitHub did dark launch - https://youtu.be/po712VIZZ7M?t=1803
+	- Feedback loop
+		- make sure that useful feedback is given at each stage
+		- ensure alerts are useful as well
+
+		
+[2] Dave Farley Continuous Deployment or Continuous Delivery? | When To Release
+	- https://www.youtube.com/watch?v=mBzDPRgue6s
+	- CD = working so that your software is always in a releasable state
+	- CD + Deployment Pipeline gives us great technical feedback. I.E - "Are we building things right"
+	- At the end of CD we "should" hava a Release Candidate. CD + Deployment Pipe SHOULD give us a definite statement about the releasability of our software.
+	- To answer the question - "Are we building the right things" - we WILL have to release it to users
+	- The more often we release, the more feedback we will get about whether we are building the right things
+	- HOW TO RELEASE MORE OFTEN:
+		- make each change small
+		- if a change is small then that change is simpler, which means that there are fewer places for errors to hide
+		- if we are releasing more changess into production, then we are, inenvitably, more careful about what each change contains
+	- **RISK OF FAILURES AROUND RELEASING CHANGES AND MITIGATION:
+		- the more changes we release together, the higher the risk of failure due to changes interacting with each other
+		- WHICH MEANS THAT TO REDUCE RISK WE NEED TO RELEASE FEWER CHANGES
+		- SO THAT STRATEGY SHOULD BE TO RELEASE MORE OFTEN WITH FEWER, SMALLER CHANGES IN EACH RELEASE
+		- THIS IS NOT JUST THEORY! State of Devops REPORT SAYS THAT THERE IS NO TRADE OFF BETWEEN SPEED AND QUALITY.
+		- THIS MAY SOUND COUNTER-INTUITIVE, BUT DATA SHOWS THAT ORGS THAT RELEASE MORE OFTEN ACHIEVE HIGHER QUALITY.
+		- REALEASING MORE OFTEN GIVES US MORE OPPORTUNITIES TO LEARN.
+	- FACTORS EFFECTING THE DECISION TO RELEASE
+		- Is the decision to release a business or technical one? 
+			- eg: Volvo Trucks get a new release when its best for them - i.e, when they are in a garage. So its business driven
+		- There might be compliance reasons
+			eg:  you can't release half-build financial exchange
+			- Its important to keep practicing CD to get valuable feedback
+			- Perhaps you can release to just the internal users (using feature toggles) using the minimum viable product.
+				- targeted release to internal users so that we can find out what works and what doesn't
+				- MUST SEE - https://youtu.be/mBzDPRgue6s?t=566 => how Dave F did this with a fintech 
+				- You learn much more by release to users than by guessing
+	
+
+[3] Progressive Delivery: Patterns & Benefits of Decoupling Deploy from Release • Dave Karow • GOTO 2020
+	- https://www.youtube.com/watch?v=6rb37PCX5_w
+	- Progressive Delivery: progressive delivery is the next step after continuous delivery, where new versions are deployed 
+	                        to a subset of users and are evaluated in terms of correctness and performance, before rolling out the
+							totality of users, and rolled back if not matching some key metrics.
+	- "when we're rolling out services what we do is PROGRESSIVE EXPERIMENTATION because what really matters is the blast radius.
+	   I.e.,  how many people will be affected when we roll that service out and what can we learn from them"
+	- The Four Shades/Strategies of Progressive Delivery:
+		- Blue/Green Deployment
+		- Canary Release
+		- Feature Flag Rollout
+		- Feature Delivery Platform (3rd party : Launch Darkly, Split, etc)
+	- Benefits of Progressive DELIVERY Strategies:
+		- https://www.split.io/blog/learn-the-four-shades-of-progressive-delivery/
+		- Avoid down time
+		- Limit blast radius: if things go wrong, fewer user are effected
+		- Limit WIP/ Achieve Flow: Do CD more by deploying unfinished stuff
+		- Learn During the Process: we can experiment more
+	- How each Progressive Del strategy measures up against the benefits:
+		- https://youtu.be/6rb37PCX5_w?t=422
+	- Feature Flag:
+		- should give the ability to turn a feature on/off
+		- should give the ability to set the % of users to expose the feature to
+		- First, you might expose the code just to the dev team for a final smoke test on production. 
+		  Next, you might dogfood, exposing the new features to your employees only (again, this is on production). 
+		  If things are still going well, you start to ratchet up the rollout into your actual user population. 
+		  This gives you the chance to expose new features to 5%, 10%, 20% of your users in steps as you go, and to be able to see how it’s going before ramping higher.
+		- Reverting your release is really quite simple: you just ratchet back the feature flag setting.
+		  YOU ARE STILL DEPLOYED TO PRODUCTION, BUT YOU’RE NOT EXPOSING THE NEW CODE TO YOUR CUSTOMERS. 
+	- Benefits of Progressive DELIVERY using Feature Flags 
+		- Decouple deployment from release
+			- enables more frequent, incremental, releases, thus enabling FLOW
+			- enables testing in production
+			- enables a "Kill Switch" so that we can "stop the pain straight away" and fix the issue later
+				- Great for preventing long triage/war-room calls when something goes wrong
+	- BEST PRACTICES:
+		- Create "Automated Guard Rails" or "Do-No-Harm Metrics"
+			- Measure for "slow reponses after a release", "more error rates"
+			- the reason we do continuous delivery and we automate things is that the things that need to happen every time 
+			   should just happen and the humans should only have to intervene when something is unusual.
+			- we want to be able to get alerts when we're seeing exception rates or performance issues EARLY IN THE ROLLOUT and we want to do this automatically
+			- a guard rail on a road exists why so you don't drive off a cliff and when you hit the guard rail there's a loud bang and 
+			  it shakes you up but you know you might even get a dent on your car but you don't fly off the cliff, that's what a 
+			  guardrail is
+		- Measure Release Impact
+			- Iteration without measurement leads to a "feature factory"
+			- Measurement give direct evidence of our efforts
+			- link feature flags to measurable data
+				- eg: "due to this feature, this user went this way and that user went that way and this is what happened"
+			- record who hit a flag, which way they were sent and why
+	- HOW LINKEDIN TARGETED USERS FOR FEATURE FLAGS, IN A SIMPLE WAY
+			- https://youtu.be/6rb37PCX5_w?t=1266
+	
+		
+[4] Mat Kent - Value of implementing technical practices like Continuous Delivery
+	- https://www.youtube.com/watch?v=HTh2bwzpPG8
+	- Product Arrogance: "WE (Devs) know what the customer wants"
+	- With CD We get away from the paralyzing effect the people have when trying to come up with THE right answers with every release. We can experiment more.
+	- Its all guesswork, whether a feature works, until its are proven right by the a customer who uses it
+	- [Agile Prinicpal 10] SIMPLICITY – THE ART OF MAXIMIZING THE AMOUNT OF WORK NOT DONE – IS ESSENTIAL
+		- https://youtu.be/HTh2bwzpPG8?t=2142
+	
+	
+
+[2] Modern Continuous Delivery • Ken Mugrage • GOTO 2019
+	- https://www.youtube.com/watch?v=wjF4X9t3FMk
+
+
+[3] Modern Continuous Delivery • Ken Mugrage • GOTO 2020
+	- https://www.youtube.com/watch?v=lBi85lNmKFw
+	
+
+[4] Surge 2012 ~ Matt Graham ~ Changing Etsy's Architectural Foundation with Continuous Deployment
+	- https://www.youtube.com/watch?v=nNOxJK6Urtg
+	
+
+[5] Premshree Pillai - Continuous deployment at Etsy
+	- https://www.youtube.com/watch?v=mJN27NzQyy4
+	
+
+[6] Neil Crawdford - Trunk based development, continuous deployment and why you should adopt them
+	- https://www.youtube.com/watch?v=aNgWjSAjjtg
+
+	
+[7] Mat Kent Increasing Agility Through Continuous Delivery
+	- Increasing Agility Through Continuous Delivery
+	
+
+[8] Mat Kent Increasing Agility Through Continuous Delivery: Branching Strategy Edition
+	- https://www.youtube.com/watch?v=y4yg7aT4NgM
+	
+
+[9] Mat Kent Deployment Pipeline
+	- https://www.youtube.com/watch?v=mFv2jV8ZgHA
+	
+	
+[10] 
+	
+
+[11] Jez Humble: Continuous Delivery - Sounds Great But It Won't Work Here
+	- https://www.youtube.com/watch?v=IvWr29afDF8
+	
+

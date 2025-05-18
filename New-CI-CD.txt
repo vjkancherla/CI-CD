@@ -1,0 +1,58 @@
+MY CI / CD FLOW
+======================
+
+These Pipelines Run in Parallel
+- Continuous Integration Pipeline
+- Continuous Release Candidate Creation Pipeline
+
+Time and Speed is of essence. 
+Resources are cheap and already provisioned, might as well use them to the fullest.
+When deploying a RC built by Continuous Release Candidate Creation Pipeline, 
+we first check to ensure that corresponding Continuous Integration Pipeline for that commit has succeded.
+
+
+This Runs on JENKINS CRON (twice a day)
+- Continuous Delivery Pipeline to a DAILY env
+	- Deploys the RC associated with the HEAD of Main branch
+		- checks to ensure that corresponding Continuous Integration Pipeline for that commit has succeded
+			- if not, looks at the last 10 commits to find a "good" commit
+
+This Runs on JENKINS CRON (Once a day)
+- Continuous Delivery Pipeline to a PROD-RC env
+	
+	
+THESE RUN ON-DEMAND from JENKINS. Jenkins "build-with-parameters" and select a RC / commit-id
+- Continuous Delivery Pipeline to a DEMO env
+- Continuous Delivery Pipeline to a UAT env
+
+
+
+Continuous Integration Pipeline
+	- lint
+	- build
+	- unit test
+	- Sonarqube (static code analysis)
+	- build container image
+	- scan container image
+	- create/update helm chart
+	- policy check for helm chart
+	- deploy to a temporary CI environment, creating a namespace
+	- run Integration tests
+	- publish success/failure
+	- tear down temporary CI environment
+	
+Continuous Release Candidate Creation (CRC) Pipeline
+	- build container image
+	- publish container image
+	- create/update helm chart
+	- publish helm chart
+	- deploy to a temporary CRC environment, creating a namespace
+		- deploy any database migration K8s Jobs (FlyAway, LiquiBase) First (A Separate Pipeline Stage )
+		- deploy the Apps as a separate Pipeline stage (in Parallel, on Step for each app deploy)
+	- run Test Suite
+		- run regression test
+		- run acceptance tests
+		- run e-2-e test 
+	- publish success/failure
+	- tear down temporary CI environment
+ 	

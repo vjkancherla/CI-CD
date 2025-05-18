@@ -1,0 +1,49 @@
+THE CD STAGES For any Branch (Feature-Branch or Trunk/Develop/Main) or PR
+==================================================================================
+
+The CD pipeline is triggered 
+	- [option-1] Either by the CI Pipeline, as part of "Trigger Deployment" stage
+	- [option-2] Or, by a Git webhook, on the creation of a branch/pr/merge to the "deployment-repo"
+
+
+
+- [Only for option-2]Stage: (Declarative: Checkout SCM)
+	- Checking out the code for the branch in the deployment-repo: Revision 464771efd01f2381ebc353d2a8acdb730eb1bcdd (feature/XYZ-10400-use-default-cloud-instance)
+
+- Stage: (Setup)
+	- Do any required setup 
+	- Identify the deployable artefact (see CI's "Trigger Deployment" stage)
+
+- Stage: (Project Compliance)
+	- Verify whether the Pipeline is triggered correctly and is safe/allowed to run for the project
+	- A call is made to an external app, with a payload containing the project (being built) information.
+	  The external app checks if the project is active and is enabled, etc and restuns a yes, go ahead, or no.
+
+- Stage: (Prepare Database Deployment)
+	- If the application depends on a database, then use this step to prep the database deployment (i.e, create DB, migration data, etc)
+	
+	
+- Stage: (Database Deployment)
+	- Execute the steps to deploy and configure the database
+	
+	
+- Stage: (Prepare Deployment)
+	- Download the docker image or deployable artefact
+	- update any configurations (eg: update config with URL of the DB we just created)
+	
+	
+- Stage: (Deploy)
+	- Deploy by creating a container from the docker image
+	- Or, if its a JAR artefact, runin "JAVA -JAR" command to execute the JAR
+	
+	
+- Stage: (Integration Test)
+	- execute automated integration tests
+	
+	
+- Stage: (Trigger Performance Test)
+	- execute automated performance tests
+	
+- Stage: (Declarative: Post Actions)
+	- Clean up
+	- Generate reports, etc

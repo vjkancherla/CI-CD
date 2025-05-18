@@ -1,0 +1,61 @@
+THE Continuous Integration (CI) STAGES For any Branch (Feature-Branch or Trunk/Develop/Main) or PR
+==================================================================================
+
+- Stage: (Declarative: Checkout SCM)
+	- Checking out the code for the branch: Revision 464771efd01f2381ebc353d2a8acdb730eb1bcdd (feature/XYZ-10400-use-default-cloud-instance)
+
+- Stage: (Setup)
+	- Do any setup 
+	- Eg: look at the name of the branch and if its "Trunk/Develop/Main" setup some things/flags, or if the branch is a feature-branch/PR setup other flags
+
+- Stage: (Project Compliance)
+	- Verify whether the Pipeline is triggered correctly and is safe/allowed to run for the project
+	- A call is made to an external app, with a payload containing the project (being built) information.
+	  The external app checks if the project is active and is enabled, etc and restuns a yes, go ahead, or no.
+
+- Stage: (Build)
+	- Runs MVN for Java
+	- Runs NPM for Node
+
+- Stage: (Test)
+	- For JAVA: mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify org.jacoco:jacoco-maven-plugin:report -Dgit.tag=feature-XYZ-10400-use-default-cloud-instance-SNAPSHOT --no-transfer-progress -DskipITs=true
+	- For NODE: npm test
+	
+- Stage: (Code Analysis)
+	- IN PARALLEL
+		- (Branch: SAST Scan)
+		- (Branch: SCA Scan)
+
+- Stage: (Containerize)
+	- Build a Docker Image
+		- docker build --no-cache --progress plain --pull --tag artifacts.int/container-snapshot-local/com/boca/cross/micro-x-service:feature-XYZ-10400-use-default-cloud-instance-SNAPSHOT --build-arg 'BASE_IMAGE=artefacts.int/bt-mcr-internal-release-mirror/blastermard/bep/1002/100798/common-pipelines/runtime-images/azul-java:17-jre' --build-arg 'JAR_FILE=micro-x-service-feature-XYZ-10400-use-default-cloud-instance-SNAPSHOT.jar' --label 'programName=Global' --label 'programUUID=cb77955b' --label 'productName=Micro-x-Framework' --label 'productUUID=07337dbd79c2' --label 'productId=4599' --label 'techAssetId=4532' --label 'techAssetName=micr0-x-Backend' --label 'git_branch=feature/XYZ-10400-use-default-cloud-instance' --label 'git_src_code_url=https://scm.prod.blastermard.int/stash/scm/SCM-105599/micro-x-service.git' -f ./Dockerfile ././target
+
+- Stage: (Container CVE Scan)
+	- Scan the image built in "containerize stage" using TwistLock. The scanning is done locally
+
+- Stage: (Tag)
+	- Calculate the correct TAG for the build artefacts
+	- For example - a Java Jar will be build/tagged as - micro-x-service-feature-XYZ-10400-use-default-cloud-instance-SNAPSHOT.jar
+	
+- Stage: (Publish Artifacts)
+ 	- Publish the INDIVIDUAL artifact (Java:JAR-file, Node:The NPM artifact ) to JFrog 
+
+- Stage: (Publish Container Image)
+	- Publish the container image to JFrog
+
+- Stage: (Trigger Deployment)
+	- Can be optional for feature-branch, but mandatory for trunk
+	- Invoke the CD pipeline (which is a separate pipeline), with the parameters -  Deployable_asset (The built docker image tag or the built/tagged JAVA Jar) 
+	- [Option-2] 
+		- For every "source" repo, we create a corresponding "deployment" repo. Source-Repo: micro-service-x, Deployment-Repo: micro-service-x-deployment
+		- In the CI's Trigger Deployment stage, Jenkins will do the following:
+			- checkout micro-service-x-deployment repo
+			- create a branch with the same name as the the branch on which the CI is being run
+			- create a file called - deployable-artifacts, which contains the details of the built artectacts
+			- commit and push the branch to remote
+		- when the new branch is created in Deployment-Repo, a Git webhook invokes the Deployment pipeline
+
+
+- Stage: (Declarative: Post Actions)
+	- Clean up
+	- Generate reports, etc

@@ -1,0 +1,107 @@
+Abhishek Veeramalla's videos + Gitlab:
+https://www.youtube.com/watch?v=jNPGo6A4VHc
+https://www.youtube.com/watch?v=JGQI5pkK82w
+https://github.com/iam-veeramalla/Jenkins-Zero-To-Hero/tree/main/java-maven-sonar-argocd-helm-k8s
+
+
+Required Git Repos
+------------------------
+1. Java Application source code repo: https://github.com/vjkancherla/Java-App
+
+2. Cloud Infrastructure (IaC) source code: https://github.com/vjkancherla/Aws-Terraform
+
+3. (GitOpsRepo) K8s (Helm) manifests for deploying the Java App to K8s Cluster: https://github.com/vjkancherla/Helm-Chart
+
+4. ArgoCD Application manifests to target the Helm manifests: https://github.com/vjkancherla/ArgoCD
+
+5. <Optional> ArgoCD AppofApps manifest: https://github.com/vjkancherla/ArgoCD-AppOfApps
+
+
+Continuous-Integration (CI) High level Steps
+-------------------------------------------------
+1. A GitRepo contains the Java Application source code
+eg: https://github.com/vjkancherla/Java-App
+
+2. A Developer -
+  a. Git Clones the repo
+  b. Creates a Feature Branch
+  c. Makes some changes
+  d. Commits and pushes the changes the remote
+  c. Creates a PR/MR to merge the code into Main Branch
+
+3. On the creation of the PR/MR, a Pipeline needs to be triggered. The Pipeline can the
+  - Github Actions
+  - GitLab Pipeline
+  - Jenkins
+  - CirceCI
+  - Etc
+
+4. The Pipleline should have the following stages:
+  - checkout code from repo (corresponding to the PR/MR)
+  - build code
+  - run unit tests
+  - run SonarQube for static code analysis
+  - Create a new docker image + tag
+  - Push the docker image to image repo
+  - Scan docker image
+
+
+
+Continuous-Delivery (CD) High level Steps
+-------------------------------------------------
+The CD pipeline starts once a new docker image + tag becomes available in the Image Repo
+
+Initial Setup:
+---------
+1. The GitOps Git Repo - https://github.com/vjkancherla/Helm-Chart - containing the K8s (Helm) manifests for deploying the Java App docker image to K8s Cluster should have the following structure:
+(See: https://www.linkedin.com/pulse/how-promote-releases-between-gitops-environments-mattias-fjellstr%C3%B6m)
+.
+├── Chart.lock
+├── Chart.yaml
+├── charts
+│   └── ingress-nginx-4.6.0.tgz
+├── templates
+│   ├── configmap.yaml
+│   ├── deployment.yaml
+│   ├── ingress.yaml
+│   ├── namespace.yaml
+│   └── service.yaml
+├── values
+│   ├── dev
+│   │   ├── values.yaml
+│   │   └── version.yaml
+│   ├── prod
+│   │   ├── values.yaml
+│   │   └── version.yaml
+│   └── uat
+│       ├── values.yaml
+│       └── version.yaml
+└── values.yaml
+
+2. ArgoCD deployed in Dev, UAT and Prod environments
+
+3. The GitRepo - https://github.com/vjkancherla/ArgoCD - containing ArgoCD Application manifests to target the Helm manifest in https://github.com/vjkancherla/Helm-Chart
+See /Users/vkancherla/Documents/Kubernetes/Helm/ASimpleAppWithDependencies/DeploymentOption-1/ArgoCD-App-files for examples.
+
+4. ArgoCD in each env, has deployed the Application manifest (from https://github.com/vjkancherla/ArgoCD) that corresponds to its env.
+
+Pipeline
+----
+1. An Image Updater (script or ArgoCD) will
+  - check https://github.com/vjkancherla/Helm-Chart
+  - update file https://github.com/vjkancherla/Helm-Chart/SimpleApp/values/dev/version.yaml to reflect the latest docker image + tag
+  - commit and merge the code (no PR/MR required for Dev env)
+Important: The step might need to happen as part of CI. This means CI - CD are NOT-decoupled.
+eg: https://www.youtube.com/watch?v=zGndgdGa1Tc
+Note: ArgoCD Image updater can be used to TRUELY decouple CI and CD
+eg: https://www.youtube.com/watch?v=zGndgdGa1Tc
+ImageUpdater:
+
+2. ArgoCD, running, in Dev env, will detect the change and automatically upgrades/updates the deployment to use the new docker image + tag
+
+3. The Dev env is now ready for testing.
+
+
+Promoting Environments (or Continuous Deployment?)
+--------------
+See https://www.linkedin.com/pulse/how-promote-releases-between-gitops-environments-mattias-fjellstr%C3%B6m

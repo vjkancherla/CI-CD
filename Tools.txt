@@ -1,0 +1,40 @@
+Tools:
+
+1. nix-shell
+	- https://nixos.org/manual/nix/stable/introduction
+	- http://ghedam.at/15978/an-introduction-to-nix-shell
+	- provides uniform and shareable configuration for development environments
+
+2. pre-commit
+	- https://pre-commit.com
+	- "hooks/checks" to run prior to Git push to remote
+	
+3. Prow + Tide
+	- https://docs.prow.k8s.io
+	- automated PR labelling, rebasing, merging, cherry picking, etc
+
+4. Jenkins
+	- for CI/CD, releasing, maintenances, etc
+	- everything happens from Jenkins
+
+5. 
+
+6. BuildBuddy
+
+7. Datadog, Humio, Grafana, Prometheus
+
+8. Zipkin 
+	- request tracing
+
+9. K9s
+
+10. OpenLens
+
+11. Helm-Secrets
+	- https://github.com/jkroepke/helm-secrets/wiki/Usage
+	
+12. Karpenter with multiple provisioners and Spot instances
+
+
+	
+
