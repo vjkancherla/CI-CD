@@ -1,0 +1,93 @@
+==================================================================
+RELEASE FLOW BRANCHING AND TAGGING STRATEGY
+==================================================================
+
+Release Flow defines how releases are tagged at various stages: feature branches, PRs, merging into trunk, and actual releases.
+
+Each library, component, service, or deployment has an independent release cadence. Releases can be abandoned.
+
+
+------------------------------------------------------------------
+VERSION TAGGING
+------------------------------------------------------------------
+
+Version numbers are specified in `version.properties` at the root of the repository.
+
+
+##MAJOR version (manually updated per semantic versioning)
+MAJOR_VERSION=1
+
+##Default values (do not modify)
+MINOR_VERSION=0 
+PATCH_VERSION=0
+
+
+
+------------------------------------------------------------------
+INITIAL RELEASE TAGS
+------------------------------------------------------------------
+
+Base version (`version.properties` values): `1.0.0`
+
+- **Feature branches & PRs**: `1.0.0-feature-TASK-1234-SNAPSHOT`
+- **Develop branch**: `1.0.0-SNAPSHOT`
+- **Release branch**: `1.0.0`
+
+
+------------------------------------------------------------------
+SUBSEQUENT RELEASE TAGS
+------------------------------------------------------------------
+
+- **Feature branches & PRs**: `1.0.0-feature-TASK-xxxx-SNAPSHOT`
+- **Develop branch**: `1.1.0-SNAPSHOT` (minor version auto-increments)
+- **Release branch**: `1.1.0` (minor version auto-increments)
+
+*Major version must be updated manually in `version.properties`.*
+
+
+------------------------------------------------------------------
+FEATURE BRANCH WORKFLOW
+------------------------------------------------------------------
+
+1. Create a feature branch: `feature/TASK-1234`
+2. Make changes, commit, and push (no PR yet).
+3. CI build triggers automatically in Jenkins.
+4. A **"ReleaseFlow Preparation"** stage runs in Jenkins:
+   - Checks out `develop/main`
+   - Finds last applied Git tag (`1.5.0-SNAPSHOT`, if any)
+   - Generates new tag: `1.5.0-feature-TASK-1234-SNAPSHOT`
+   - Tags the commit with `1.5.0-feature-TASK-1234-SNAPSHOT`
+5. This tag is used for Docker images.
+
+
+------------------------------------------------------------------
+PR WORKFLOW
+------------------------------------------------------------------
+
+Same behavior as **Feature Branch Workflow**.
+
+
+------------------------------------------------------------------
+MERGING INTO DEVELOP
+------------------------------------------------------------------
+
+1. PR is merged into `develop`, triggering a Jenkins build.
+2. The **"ReleaseFlow Preparation"** stage calls the **"calculate-release-flow-version"** pipeline.
+3. The pipeline:
+   - Checks out `develop/main`
+   - Finds last applied Git tag (`1.5.0-SNAPSHOT`)
+   - Finds the last merged PR build number (e.g., `PR-6`)
+   - Generates new tag: `1.6.0-SNAPSHOT`
+   - Tags the commit (HEAD of `develop`) with `1.6.0-SNAPSHOT`
+4. This tag is used for Docker images.
+
+
+------------------------------------------------------------------
+ACTUAL RELEASE
+------------------------------------------------------------------
+
+1. Create a release branch: `release/5.7.x` (OR, can be automatically created once a merge to develop has completed CI/CD)
+2. CI build triggers automatically in Jenkins.
+3. **"ReleaseFlow Preparation"** calls **"calculate-release-flow-version"**.
+4. **Calculated release tag**: `5.7.0`
+5. Trunk minor version increments: `5.8.0-SNAPSHOT`

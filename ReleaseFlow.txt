@@ -1,0 +1,144 @@
+==================================================================
+RELEASE FLOW BRANCHING STRATEGY
+==================================================================
+
+Release Flow is a branching strategy built upon Trunk-Based Development. It ensures a structured approach to development and releases, providing:
+- A release-driven workflow
+- Core benefits of Trunk-Based Development
+- Short-lived feature branches with frequent code integration, reducing conflicts
+- Pull-requests for structured review and validation before merging
+- Release branches to separate development efforts from production-ready code
+
+------------------------------------------------------------------
+BRANCHES
+------------------------------------------------------------------
+
+- **Mainline (develop)**: Latest development changes and continuous integration target
+- **Feature branches**: Short-lived development branches merged ONLY into the trunk (`feature/TASK-11`)
+- **Release branches**: Long-lived branches created from trunk (`release/3.2.x`)
+- **Fix branches**: Created for defect resolution, merged back into mainline or release (`bugfix/TASK-22`, `hotfix/TASK-32`)
+
+------------------------------------------------------------------
+RELEASES
+------------------------------------------------------------------
+
+- Releases are built, tested, and promoted through a structured path-to-production.
+- Each library, component, service, or deployment follows an independent release cadence.
+- Releases can be abandoned when necessary, ensuring efficiency.
+- A minimum number of active releases must be maintained to reduce overhead.
+
+------------------------------------------------------------------
+VERSIONING
+------------------------------------------------------------------
+
+Semantic versioning is **mandatory** ([SemVer](https://semver.org/)).
+
+------------------------------------------------------------------
+RELEASE FLOW IN GIT
+------------------------------------------------------------------
+
+**Feature branches**
+1. `feature/TASK-60` created from trunk at tag `6.4.2-SNAPSHOT`
+2. Another feature branch `feature/TASK-61` is created during development
+3. `feature/TASK-60` merged into trunk, increasing minor version → `6.5.0-SNAPSHOT`
+4. `feature/TASK-61` merged into trunk, further increasing minor version → `6.6.0-SNAPSHOT`
+
+------------------------------------------------------------------
+BUGFIXES
+------------------------------------------------------------------
+
+**Bugfixes on trunk**
+1. `bugfix/TASK-65` created at `6.10.1-SNAPSHOT`
+2. Merged into trunk, increasing patch version → `6.10.2-SNAPSHOT`
+3. `bugfix/TASK-66` created at `6.10.2-SNAPSHOT`
+4. Merged into trunk, increasing patch version → `6.10.3-SNAPSHOT`
+
+**Bugfixes on release branch**
+1. Release branch `release/3.0.x` is actively supported.
+2. `bugfix/TASK-68-release-3.0.x` created from `3.0.0`
+3. Merged, increasing patch version → `3.0.1`
+4. Bugfix identified for trunk, branch `bugfix/TASK-68-trunk` created.
+5. Code transported/adapted for trunk inclusion.
+6. Merged into trunk, increasing patch version → `3.1.1-SNAPSHOT`
+
+------------------------------------------------------------------
+COMPLETE RELEASE FLOW
+------------------------------------------------------------------
+
+1. `feature/TASK-1` merged into trunk, increasing minor version → `1.4.0-SNAPSHOT`
+2. Release branch `release/1.5.x` created → `1.5.0`
+3. Trunk minor version increased → `1.6.0-SNAPSHOT`
+4. Bugfix `bugfix/TASK-5` merged into release branch, increasing patch version → `1.5.1`
+5. Bugfix identified for trunk, transported/adapted, merged.
+6. Major/breaking change merged, updating version → `2.0.0-SNAPSHOT`
+7. Bugfix merged into both `release/1.5.x` and trunk.
+
+------------------------------------------------------------------
+KEY WORKFLOW PRINCIPLES
+------------------------------------------------------------------
+
+- Changes are developed independently from mainline/release branches.
+- Code is validated before merging.
+- Feature changes merge ONLY into mainline.
+- Bugfixes/hotfixes merge into mainline or release branches when necessary.
+- Code is **only** released from release branches.
+- Feature branches should be short-lived.
+- Repository scope MUST be adhered to—no downstream implementations.
+
+------------------------------------------------------------------
+LIBRARY & COMPONENT RELEASES
+------------------------------------------------------------------
+
+Every feature merged into trunk **can** trigger a release:
+1. CI/CD automatically creates a **release branch**.
+2. Pipeline builds artifacts and tags commits.
+3. **Release branch is terminated immediately** after artifact creation.
+4. If required, terminated release branches can be restored for bugfixes (`release/5.8.x` was restored for `bugfix/TASK-53`).
+
+------------------------------------------------------------------
+VERSIONING & SNAPSHOTS
+------------------------------------------------------------------
+
+Versions evolve across different stages:
+- **Snapshot versions** are created for trunk, feature, and fix branches.
+- **Release versions** are created **ONLY** from release branches.
+
+Example flow:
+1. `feature/TASK-80` creates artifact `8.1.0-feature-TASK-80-SNAPSHOT`
+2. Another commit updates `8.1.0-feature-TASK-80-SNAPSHOT`
+3. `feature/TASK-80` merged into trunk, creating `8.2.0-SNAPSHOT`
+4. Release branch `release/8.2.x` created → `8.2.0`
+5. Commit tagged → `8.3.0-feature-TASK-80-SNAPSHOT`
+6. Bugfix `bugfix/TASK-81` creates `8.3.0-bugfix-TASK-81-SNAPSHOT`
+
+------------------------------------------------------------------
+WORKFLOW SUMMARY
+------------------------------------------------------------------
+
+**Feature/Bugfixes**
+1. Code branch created from mainline.
+2. Code changes made and pushed.
+3. Pull-request raised to mainline.
+4. Merged after validation.
+
+**Hotfixes**
+1. Locate affected release branch.
+2. Create fix branch from release branch.
+3. Code changes made and pushed.
+4. Pull-request raised to release branch.
+5. Merged after validation.
+6. Cherry-picked to:
+   - Mainline
+   - Other active release branches
+
+**Releases**
+1. Code branch created from mainline, based on feature tag.
+2. Branch pushed to repository.
+3. No direct changes made.
+
+------------------------------------------------------------------
+RELEASE DEPRECATION
+------------------------------------------------------------------
+
+- Releases no longer in production or abandoned **will be deleted**.
+- Deleted release branches **can be restored** using their Git tags.
