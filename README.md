@@ -1,24 +1,38 @@
-# CI/CD
+# CI/CD Pipeline Concepts
 
-A reference collection of notes documenting **CI/CD** concepts, stages, and
-GitOps pipeline flow. This repo is primarily documentation rather than code.
+A reference of the stages and terminology involved in building a modern
+**Continuous Integration / Continuous Delivery** pipeline, including GitOps-style
+environment promotion.
 
 ## What's inside
 
-- `The-CI-Stages.txt`, `The-CD-Stages.txt`, `The-Release-Stages.txt` — the stages
-  of CI, CD, and release management.
-- `ReleaseFlow.txt`, `ReleaseFlow2.txt` — release flow walkthroughs.
-- `GitOps-CI-CD-Pipeline-steps.txt`, `CI-CD-Playbook.txt`, `New-CI-CD.txt` —
-  pipeline and GitOps steps.
-- `gitops_post_deployment_guide.md` — post-deployment GitOps guide.
-- `Tools.txt`, `Youtube-CI-CD.txt` — tooling and video references.
+- `The-CI-Stages.txt` — the stages of a CI pipeline (checkout, setup, build, test).
+- `The-CD-Stages.txt` — the stages of a CD pipeline (staging, promotion, deploy).
+- `The-Release-Stages.txt` — how releases are packaged and promoted.
+- `CI-CD-Playbook.txt` — an end-to-end playbook tying the stages together.
+- `GitOps-CI-CD-Pipeline-steps.txt` — a GitOps-flavoured CI/CD flow.
+- `ReleaseFlow.txt` / `ReleaseFlow2.txt` — alternative release flow diagrams.
+- `gitops_env_promotion.txt` — promoting environments through GitOps.
+- `gitops_post_deployment_guide.md` — post-deployment verification and rollback.
+- `Tools.txt` — the tooling typically used at each stage.
+- `Youtube-CI-CD.txt` — linked video walkthroughs.
+
+## What you'll learn
+
+- The distinct responsibilities of CI vs CD.
+- How to structure build, test, and deploy stages for feature branches and trunk.
+- How GitOps shifts deployment to a pull model from a Git repo.
+- How environments are promoted (dev → staging → prod) safely.
 
 ## Tools covered
 
-- CI/CD pipeline design
-- GitOps (Argo CD-style)
-- Jenkins pipelines
+- Jenkins (declarative pipelines), GitOps controllers (Argo CD), CI/CD tooling.
 
 ## How to use
 
-Use these files as a study/reference guide for CI/CD and GitOps concepts.
+Read `The-CI-Stages.txt` and `The-CD-Stages.txt` for the conceptual model, then
+`CI-CD-Playbook.txt` for how they fit together in a real pipeline.
+
+## Related
+
+- The Twelve-Factor App: https://12factor.net/
